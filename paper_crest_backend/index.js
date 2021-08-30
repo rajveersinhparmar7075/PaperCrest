@@ -1,19 +1,32 @@
 require("dotenv").config();
+const connectDB = require("./config/db");
 const express = require("express");
-
 const cors = require("cors");
-
 const app = express();
-const bcrypt = require("bcryptjs");
 
-app.use(express.json());
 app.use(cors());
 
-const PORT = process.env.PORT || 4000;
+connectDB();
+app.use(
+  express.json({
+    extended: false,
+  })
+);
+
+// swagger configuration
+
+//Define routes
+app.use("/api/auth", require("./userAuth"));
+app.get("/", (req, res) => {
+  res.send([
+    {
+      status: "Server running",
+    },
+  ]);
+});
+// server port
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
-
-//Define routes
-app.use("/api/auth", require("./userAuth"));
